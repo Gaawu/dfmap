@@ -14,10 +14,10 @@
     .app { display: flex; flex-direction: column; height: 100%; }
     /* 工具栏：置顶，半透明深色背景 */
     .toolbar { display: flex; gap: 5px; padding: 6px 8px; background: rgba(20,24,28,.9); border-bottom: 1px solid rgba(255,255,255,.06); position: sticky; top: 0; z-index: 10; align-items: center; font-size: 0.6em; }
-    .toolbar button, .toolbar input[type="range"] { background: #192028; color: #cfd3d7; border: 1px solid #2a3540; border-radius: 4px; padding: 4px 6px; cursor: pointer; }
-    .toolbar input[type="range"] { width: 96px; accent-color: #5ac8fa; padding: 0; }
+    .toolbar button, .toolbar input[type="range"] { background: #0ff798; color: #000000; border: 1px solid #2a3540; border-radius: 4px; padding: 4px 6px; cursor: pointer; }
+    .toolbar input[type="range"] { width: 96px; accent-color: #0ff798; padding: 0; }
     .load-status { display: none; margin-left: auto; align-items: center; gap: 6px; color: #9fb3c8; }
-    .progress { width: 140px; height: 6px; background: #1a232c; border: 1px solid #2a3540; border-radius: 6px; overflow: hidden; }
+    .progress { width: 140px; height: 6px; background: #0ff798; border: 1px solid #2a3540; border-radius: 6px; overflow: hidden; }
     .progress > span { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, #3ba9ff, #77d0ff); }
     .toolbar button:hover { filter: brightness(1.1); }
     /* 地图容器：居中显示并隐藏滚动，防止非全屏时出现滚动条 */
@@ -34,7 +34,7 @@
     .spawn:hover::after { box-shadow: 0 0 6px rgba(0, 180, 255, .8); }
     .spawn.active::after { box-shadow: 0 0 8px rgba(255, 210, 0, .9); }
     /* 当前线路提示：右上角半透明卡片 */
-    .legend { position: absolute; right: 8px; top: 8px; background: rgba(15,18,22,.75); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,.08); border-radius: 8px; padding: 8px 10px; font-size: 12px; color: #cfd3d7; }
+    .legend { position: absolute; right: 8px; top: 8px; background: rgba(15,18,22,.75); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,.08); border-radius: 8px; padding: 8px 10px; font-weight: bold; font-size: 12px; color: #0ff798; }
   </style>
 </head>
 <body>
@@ -42,7 +42,7 @@
     <!-- 顶部工具栏：提示图显示与透明度、清除当前线路 -->
     <div class="toolbar">
       <button id="toggleHint">显示出生点提示</button>
-      <label style="display:flex;align-items:center;gap:6px;background:transparent;border:none;color:#cfd3d7;">提示透明度 <input id="hintOpacity" type="range" min="0" max="100" value="45"></label>
+      <label style="display:flex;align-items:center;gap:6px;background:transparent;border:none;color:#ffffff;">提示透明度 <input id="hintOpacity" type="range" min="0" max="100" value="45"></label>
       <button id="clearRoute">清除当前线路</button>
       <span id="loadStatus" class="load-status"><span id="loadText">资源加载中 0/14 (0%)</span><span class="progress"><span id="loadFill"></span></span></span>
     </div>
