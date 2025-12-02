@@ -16,6 +16,9 @@
     .toolbar { display: flex; gap: 5px; padding: 6px 8px; background: rgba(20,24,28,.9); border-bottom: 1px solid rgba(255,255,255,.06); position: sticky; top: 0; z-index: 10; align-items: center; font-size: 0.6em; }
     .toolbar button, .toolbar input[type="range"] { background: #192028; color: #cfd3d7; border: 1px solid #2a3540; border-radius: 4px; padding: 4px 6px; cursor: pointer; }
     .toolbar input[type="range"] { width: 96px; accent-color: #5ac8fa; padding: 0; }
+    .load-status { display: none; margin-left: auto; align-items: center; gap: 6px; color: #9fb3c8; }
+    .progress { width: 140px; height: 6px; background: #1a232c; border: 1px solid #2a3540; border-radius: 6px; overflow: hidden; }
+    .progress > span { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, #3ba9ff, #77d0ff); }
     .toolbar button:hover { filter: brightness(1.1); }
     /* 地图容器：居中显示并隐藏滚动，防止非全屏时出现滚动条 */
     .map-wrap { position: relative; flex: 1; display: grid; place-items: center; overflow: hidden; }
@@ -41,6 +44,7 @@
       <button id="toggleHint">显示出生点提示</button>
       <label style="display:flex;align-items:center;gap:6px;background:transparent;border:none;color:#cfd3d7;">提示透明度 <input id="hintOpacity" type="range" min="0" max="100" value="45"></label>
       <button id="clearRoute">清除当前线路</button>
+      <span id="loadStatus" class="load-status"><span id="loadText">资源加载中 0/14 (0%)</span><span class="progress"><span id="loadFill"></span></span></span>
     </div>
     <div class="map-wrap">
       <!-- 地图层：背景图、线路覆盖、出生点提示、当前线路提示 -->
@@ -78,6 +82,9 @@
     const bgEl = document.getElementById('bg');
     const legendEl = document.getElementById('legend');
     const hintOpacityEl = document.getElementById('hintOpacity');
+    const loadStatusEl = document.getElementById('loadStatus');
+    const loadTextEl = document.getElementById('loadText');
+    const loadFillEl = document.getElementById('loadFill');
 
     // 当前选中出生点索引
     let activeIdx = null;
@@ -129,6 +136,25 @@
       }
     } catch {}
 
+    function preloadRoutes() {
+      const total = spawns.length;
+      let done = 0;
+      function update() {
+        const pct = Math.round((done / total) * 100);
+        loadTextEl.textContent = '资源加载中 ' + done + '/' + total + ' (' + pct + '%)';
+        loadFillEl.style.width = pct + '%';
+      }
+      loadStatusEl.style.display = 'flex';
+      return new Promise((resolve) => {
+        spawns.forEach(s => {
+          const img = new Image();
+          img.onload = () => { done++; update(); if (done === total) { loadStatusEl.style.display = 'none'; resolve(); } };
+          img.onerror = () => { done++; update(); if (done === total) { loadStatusEl.style.display = 'none'; resolve(); } };
+          img.src = 'Img/' + s.file;
+        });
+      });
+    }
+
     // 为每个出生点创建一个隐形按钮，保留光晕与点击交互
     function makeSpawn(idx, s) {
       const b = document.createElement('button');
@@ -165,6 +191,7 @@
         document.documentElement.style.setProperty('--toolbar-h', h + 'px');
       }
       applyToolbarHeight();
+      preloadRoutes();
       spawns.forEach((s, i) => mapEl.appendChild(makeSpawn(i, s)));
       document.getElementById('toggleHint').addEventListener('click', () => {
         const on = hintEl.style.display !== 'none';
